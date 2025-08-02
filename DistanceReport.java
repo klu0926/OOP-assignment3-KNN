@@ -14,9 +14,9 @@ public class DistanceReport extends DistanceCalculator {
   private List<String[]> distances;
   private Map<String, List<String[]>> cacheRelated; // Cache
 
-  public DistanceReport(Records records) {
-    this.records = records.getRecords();
-    this.recordsMap = records.getMapRecords();
+  public DistanceReport(CSVReader reader) {
+    this.records = reader.getRecords();
+    this.recordsMap = reader.getRecordsMap();
     this.distances = getAllDistances();
     this.cacheRelated = new HashMap<>();
   }
