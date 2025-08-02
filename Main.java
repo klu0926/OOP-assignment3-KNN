@@ -8,8 +8,8 @@ public class Main {
     // Create a new records instance
     Records records = new Records(CSVReader.read("./Experiment.csv"));
 
-    // Create a report instance
-    DistanceReport report = new DistanceReport(records.getRecords());
+    // Create a report 
+    DistanceReport report = new DistanceReport(records);
 
     // Calculate all N accuracy
     for (int n : new int[] { 3, 5, 7, 11, 13 }) {

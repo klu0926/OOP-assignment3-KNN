@@ -1,16 +1,20 @@
+
 // Kuo Yu Lu
 // Step 3
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DistanceReport extends DistanceCalculator {
   private List<String[]> records;
+  private Map<String, Sample> recordsMap;
   private List<String[]> distances;
 
-  public DistanceReport(List<String[]> records) {
-    this.records = records;
+  public DistanceReport(Records records) {
+    this.records = records.getRecords();
+    this.recordsMap = records.getMapRecords();
     this.distances = getAllDistances();
   }
 
@@ -26,7 +30,7 @@ public class DistanceReport extends DistanceCalculator {
         String sampleAId = records.get(i)[0];
         String sampleBId = records.get(j)[0];
         double distance = getDistance(
-            records.get(i), records.get(j));
+            recordsMap.get(sampleAId), recordsMap.get(sampleBId));
 
         // Create entry
         String[] entry = {
@@ -72,13 +76,9 @@ public class DistanceReport extends DistanceCalculator {
       for (int i = 0; i < n; i++) {
         String neighborId = related.get(i)[1];
 
-        // Find neighbor diagnosis in records
-        for (String[] record : records) {
-          if (record[0].equals(neighborId)) {
-            neighborDiagnoses.add(record[1]);
-            break;
-          }
-        }
+        // (HashMap)Find neighbor diagnosis in records
+        String neighborDiagnosis = recordsMap.get(neighborId).getDiagnosis();
+        neighborDiagnoses.add(neighborDiagnosis);
       }
 
       // Predict majority
