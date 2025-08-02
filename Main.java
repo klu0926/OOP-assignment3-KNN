@@ -13,7 +13,6 @@ public class Main {
 
     // Calculate all N accuracy
     for (int n : new int[] { 3, 5, 7, 11, 13 }) {
-
       double acc = report.getTopNAccuracy(n);
       System.out.printf("N = %-3s Accuracy = %.2f%%\n", n, acc);
     }

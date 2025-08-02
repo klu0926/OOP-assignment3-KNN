@@ -3,6 +3,7 @@
 // Step 3
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,11 +12,13 @@ public class DistanceReport extends DistanceCalculator {
   private List<String[]> records;
   private Map<String, Sample> recordsMap;
   private List<String[]> distances;
+  private Map<String, List<String[]>> cacheRelated; // Cache
 
   public DistanceReport(Records records) {
     this.records = records.getRecords();
     this.recordsMap = records.getMapRecords();
     this.distances = getAllDistances();
+    this.cacheRelated = new HashMap<>();
   }
 
   // Step 3
@@ -57,18 +60,27 @@ public class DistanceReport extends DistanceCalculator {
       String sampleId = sample[0];
       String actualDiagnosis = sample[1];
 
-      // Get a list of comparsions(row) of current sample, then sorted to ASC
-      // steps:
-      // stream : convert to a stream in order to use filter and sorted
-      // filter : col 1 is current id, col 2 is not current id
-      // sorted : parse col 2 to double, compare to sort to ASC (small -> big)
-      // (closest on top)
-      // collect : convert back to a list
-      List<String[]> related = distances
-          .stream()
-          .filter(row -> row[0].equals(sampleId) && !row[1].equals(sampleId))
-          .sorted(Comparator.comparingDouble(row -> Double.parseDouble(row[2])))
-          .collect(Collectors.toList());
+      List<String[]> related = new ArrayList<>();
+      // Check if cache exist
+      if (cacheRelated.get(sampleId) != null) {
+        related = cacheRelated.get(sampleId);
+      } else {
+        // Get a list of comparsions(row) of current sample, then sorted to ASC
+        // steps:
+        // stream : convert to a stream in order to use filter and sorted
+        // filter : col 1 is current id, col 2 is not current id
+        // sorted : parse col 2 to double, compare to sort to ASC (small -> big)
+        // (closest on top)
+        // collect : convert back to a list
+        related = distances
+            .stream()
+            .filter(row -> row[0].equals(sampleId) && !row[1].equals(sampleId))
+            .sorted(Comparator.comparingDouble(row -> Double.parseDouble(row[2])))
+            .collect(Collectors.toList());
+
+        // add to cache
+        cacheRelated.put(sampleId, related);
+      }
 
       // Get top N closest
       // run n times
