@@ -21,7 +21,5 @@ public class Main {
       System.out.print("\r");
       System.out.printf("N = %-3s Accuracy = %.2f%%\n", n, acc);
     }
-
   }
-
 }
